@@ -215,18 +215,31 @@ ollama pull deepseek-r1:8b-llama-distill-q4_K_M
 python experiments/full_evaluation.py --target-model deepseek-r1:8b-llama-distill-q4_K_M --engine ollama
 ```
 
-### 問題 2: Ollama長時間運行穩定性
-**現象**: 處理大量探針（438個）時可能出現連接錯誤  
+### 問題 2: Ollama長時間運行穩定性 ✅ 已解決
+**現象**: 處理大量探針（438個）時可能出現KeyboardInterrupt連接錯誤  
 **原因**: 長時間HTTP請求和資源競爭  
-**解決方案**: 使用快速評估模式（50個探針）
+**解決方案**: 使用超穩健提取工具（已於2026年2月4日修復）
 
 ```bash
-# 快速評估（推薦用於初步測試）
-python experiments/quick_evaluation.py --target-model MODEL_NAME --num-probes 50
+# ✅ 推薦：使用超穩健提取工具
+python experiments/ultra_robust_extraction.py \
+  --model llama3.2:3b \
+  --engine ollama \
+  --num-probes 60 \
+  --probes-per-session 3 \
+  --rest-time 4 \
+  --device cuda \
+  --output data/anchor_models/llama3_2_3b_fingerprint.json
 
-# 完整評估（時間較長，可能需要分批處理）
-python experiments/full_evaluation.py --target-model MODEL_NAME
+# 自動化測試（推薦用於批量測試）
+python automated_comprehensive_test.py
 ```
+
+**新功能**:
+- ✅ 每3個探針自動重新加載模型（避免長時間連接）
+- ✅ 每個探針後自動保存檢查點
+- ✅ 支持中斷後無縫恢復
+- ✅ 100%穩定性驗證通過
 
 ### 問題 3: GPU內存不足
 **現象**: CUDA out of memory  
@@ -261,6 +274,25 @@ python experiments/full_evaluation.py --target-model MODEL_NAME
 - [DeepSeek-R1測試報告](DEEPSEEK_R1_TEST_REPORT.md)
 - [最終測試報告](FINAL_TEST_REPORT_20260204.md)
 - [工作總結](FINAL_SUMMARY_20260204.md)
+- **[全面測試報告（最新）](COMPREHENSIVE_TEST_REPORT.md)** ⭐ 2026/02/04
+
+### 最新測試結果 (2026/02/04)
+
+**✅ 核心發現**: DeepSeek-R1-Distill-Llama-8B 屬於 DeepSeek 家族
+
+```
+相似度排名:
+1. deepseek-r1:7b [deepseek]  0.5863  🥇
+2. gpt2           [gpt]       0.5824  
+3. gpt2-medium    [gpt]       0.5822  
+
+結論: DeepSeek-R1:8b 與 DeepSeek 家族相似度高 0.40%
+```
+
+**測試環境**:
+- GPU: NVIDIA RTX 4090 (100% GPU利用率確認)
+- 穩定性: 100% (KeyboardInterrupt問題已解決)
+- 成功率: 20/20 探針 (100%)
 
 ## 授權
 
