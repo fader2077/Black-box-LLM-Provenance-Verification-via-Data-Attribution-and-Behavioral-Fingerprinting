@@ -1,0 +1,168 @@
+
+    <!DOCTYPE html>
+    <html lang="zh-TW">
+    <head>
+        <meta charset="UTF-8">
+        <title>LLM 溯源分析報告</title>
+        <style>
+            body {
+                font-family: 'Microsoft JhengHei', Arial, sans-serif;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+            .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 30px;
+                border-radius: 10px;
+                margin-bottom: 30px;
+            }
+            .section {
+                background: white;
+                padding: 20px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .risk-high { color: #dc3545; font-weight: bold; }
+            .risk-medium { color: #ffc107; font-weight: bold; }
+            .risk-low { color: #28a745; font-weight: bold; }
+            .score-bar {
+                height: 30px;
+                background-color: #e0e0e0;
+                border-radius: 15px;
+                overflow: hidden;
+                margin: 10px 0;
+            }
+            .score-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+                transition: width 0.3s ease;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background-color: #667eea;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>🔍 黑盒 LLM 溯源分析報告</h1>
+            <p>Black-box LLM Provenance Verification</p>
+        </div>
+        
+        <div class="section">
+            <h2>📊 風險評估</h2>
+            <p><strong>待測模型：</strong>test-gpt2</p>
+            <p><strong>風險等級：</strong><span class="risk-低風險">低風險 (Low Risk)</span></p>
+            <p><strong>判定結果：</strong>模型可能來自已知的開源項目</p>
+            <p><strong>置信度：</strong>75.00%</p>
+            
+            <div class="score-bar">
+                <div class="score-fill" style="width: 75.0%"></div>
+            </div>
+            
+            
+        </div>
+        
+        <div class="section">
+            <h2>🎯 最佳匹配</h2>
+            <table>
+                <tr>
+                    <th>屬性</th>
+                    <th>值</th>
+                </tr>
+                <tr>
+                    <td>模型名稱</td>
+                    <td>qwen2.5:7b</td>
+                </tr>
+                <tr>
+                    <td>相似度</td>
+                    <td>5.00%</td>
+                </tr>
+                <tr>
+                    <td>來源</td>
+                    <td>china</td>
+                </tr>
+                <tr>
+                    <td>類別</td>
+                    <td>qwen</td>
+                </tr>
+                <tr>
+                    <td>廠商</td>
+                    <td>N/A</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>📈 所有錨點模型相似度</h2>
+            <table>
+                <tr>
+                    <th>模型名稱</th>
+                    <th>相似度</th>
+                    <th>視覺化</th>
+                </tr>
+                
+                <tr>
+                    <td>qwen2.5:7b</td>
+                    <td>5.00%</td>
+                    <td>
+                        <div class="score-bar" style="height: 20px;">
+                            <div class="score-fill" style="width: 5.0%; height: 100%;"></div>
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td>llama3.2:3b</td>
+                    <td>3.00%</td>
+                    <td>
+                        <div class="score-bar" style="height: 20px;">
+                            <div class="score-fill" style="width: 3.0%; height: 100%;"></div>
+                        </div>
+                    </td>
+                </tr>
+                
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>🌍 按來源分析</h2>
+            <table>
+                <tr>
+                    <th>來源</th>
+                    <th>平均相似度</th>
+                </tr>
+                
+                <tr>
+                    <td>china</td>
+                    <td>5.00%</td>
+                </tr>
+                
+                <tr>
+                    <td>meta</td>
+                    <td>3.00%</td>
+                </tr>
+                
+            </table>
+        </div>
+        
+        <footer style="text-align: center; margin-top: 40px; color: #666;">
+            <p>生成時間: 2026-02-03T18:51:01.432476</p>
+            <p>© 2026 LLM Provenance Verification System</p>
+        </footer>
+    </body>
+    </html>
+    

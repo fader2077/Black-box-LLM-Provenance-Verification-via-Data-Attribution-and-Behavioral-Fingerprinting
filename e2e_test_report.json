@@ -1,0 +1,75 @@
+{
+  "target_model": "gpt2",
+  "analysis_timestamp": "2026-02-03T18:51:12.177682",
+  "best_match": {
+    "model_name": "qwen2.5:7b",
+    "similarity_score": 0.0,
+    "source": "china",
+    "category": "qwen",
+    "vendor": "Alibaba"
+  },
+  "risk_assessment": {
+    "risk_level": "未知 (Unknown)",
+    "verdict": "無法識別模型來源",
+    "confidence": 0.0
+  },
+  "similarity_scores": {
+    "qwen2.5:7b": 0.0,
+    "deepseek-r1:7b": 0.0,
+    "yi:6b": 0.0,
+    "llama3.2:3b": 0.0,
+    "gemma2:2b": 0.0
+  },
+  "source_analysis": {
+    "china": 0.0,
+    "meta": 0.0,
+    "google": 0.0
+  },
+  "detailed_results": [
+    {
+      "model_name": "qwen2.5:7b",
+      "source": "china",
+      "category": "qwen",
+      "overall_similarity": 0.0,
+      "logit_similarity": {},
+      "refusal_similarity": {}
+    },
+    {
+      "model_name": "deepseek-r1:7b",
+      "source": "china",
+      "category": "deepseek",
+      "overall_similarity": 0.0,
+      "logit_similarity": {},
+      "refusal_similarity": {}
+    },
+    {
+      "model_name": "yi:6b",
+      "source": "china",
+      "category": "yi",
+      "overall_similarity": 0.0,
+      "logit_similarity": {},
+      "refusal_similarity": {}
+    },
+    {
+      "model_name": "llama3.2:3b",
+      "source": "meta",
+      "category": "llama",
+      "overall_similarity": 0.0,
+      "logit_similarity": {},
+      "refusal_similarity": {}
+    },
+    {
+      "model_name": "gemma2:2b",
+      "source": "google",
+      "category": "gemma",
+      "overall_similarity": 0.0,
+      "logit_similarity": {},
+      "refusal_similarity": {}
+    }
+  ],
+  "thresholds": {
+    "high_risk": 0.75,
+    "medium_risk": 0.5,
+    "low_risk": 0.25
+  }
+}

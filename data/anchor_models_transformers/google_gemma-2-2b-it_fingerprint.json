@@ -1,0 +1,21 @@
+{
+  "model_name": "google/gemma-2-2b-it",
+  "timestamp": "2026-02-03T20:19:01.058032",
+  "logit_fingerprint": {
+    "vector": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "dimension": 5,
+    "stats": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    }
+  },
+  "refusal_fingerprint": null
+}
