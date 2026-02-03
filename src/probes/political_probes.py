@@ -6,6 +6,7 @@
 import json
 from typing import List, Dict
 from pathlib import Path
+from loguru import logger  # 添加 logger 导入
 
 
 class PoliticalProbes:
@@ -208,6 +209,7 @@ class PoliticalProbes:
         # 添加元數據
         for probe in all_probes:
             probe["type"] = "political_sensitivity"
+            probe["probe_type"] = "political_sensitivity"  # 🔧 修复：添加 probe_type 字段用于拒绝检测
             probe["language"] = "zh" if any('\u4e00' <= c <= '\u9fff' for c in probe["prompt"]) else "en"
         
         self.probes = all_probes
@@ -220,8 +222,9 @@ class PoliticalProbes:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(self.probes, f, ensure_ascii=False, indent=2)
         
-        print(f"✓ 政治敏感性探針已保存: {output_path}")
-        print(f"  總數: {len(self.probes)} 個探針")
+        # 使用 logger 而不是 print，避免 cp950 编码问题
+        logger.info(f"政治敏感性探針已保存: {output_path}")
+        logger.info(f"總數: {len(self.probes)} 個探針")
     
     def get_statistics(self) -> Dict:
         """獲取探針統計資訊"""

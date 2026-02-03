@@ -99,12 +99,12 @@ def extract_anchor_fingerprints(num_probes: int = 50):
     with open(probes_file, 'r', encoding='utf-8') as f:
         all_probes = json.load(f)
     
-    # 使用指定数量的探针
+    # 使用所有探针（不限制数量）
     test_probes = []
     for probe_type in all_probes.keys():
-        test_probes.extend(all_probes[probe_type][:num_probes])
+        test_probes.extend(all_probes[probe_type])  # 🔧 移除数量限制，使用全部探针
     
-    logger.info(f"使用 {len(test_probes)} 个探针进行指纹提取")
+    logger.info(f"使用 {len(test_probes)} 个探针进行指纹提取 (完整数据集)")
     
     # 2. 创建输出目录
     anchor_dir = Path("data/anchor_models")

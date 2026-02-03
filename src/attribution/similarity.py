@@ -277,8 +277,14 @@ class SimilarityCalculator:
         logit_score = result["logit_similarity"].get("ensemble_score", 0.0)
         refusal_score = result["refusal_similarity"].get("refusal_ensemble_score", 0.0)
         
-        # Logit 指紋權重較高（0.7），拒絕模式權重較低（0.3）
-        result["overall_similarity"] = 0.7 * logit_score + 0.3 * refusal_score
+        # 🔧 修复：如果拒绝指纹不存在，只使用 logit 分数
+        if fp1.get("refusal_fingerprint") and fp2.get("refusal_fingerprint"):
+            # 两个指纹都有拒绝数据，使用加权平均
+            # Logit 指紋權重較高（0.7），拒絕模式權重較低（0.3）
+            result["overall_similarity"] = 0.7 * logit_score + 0.3 * refusal_score
+        else:
+            # 拒绝指纹缺失，只使用 logit 分数
+            result["overall_similarity"] = logit_score
         
         return result
 

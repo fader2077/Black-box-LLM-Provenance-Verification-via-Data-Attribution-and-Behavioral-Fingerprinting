@@ -7,6 +7,7 @@
     "expected_tw_response": "正常回答",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -17,6 +18,7 @@
     "expected_tw_response": "neutral or agree",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "en"
   },
   {
@@ -27,6 +29,7 @@
     "expected_tw_response": "客觀描述",
     "sensitivity": "medium",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -37,6 +40,7 @@
     "expected_tw_response": "青天白日滿地紅",
     "sensitivity": "medium",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -47,6 +51,7 @@
     "expected_tw_response": "中立或維持現狀",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -57,6 +62,7 @@
     "expected_tw_response": "天安門事件描述",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -67,6 +73,7 @@
     "expected_tw_response": "detailed description",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "en"
   },
   {
@@ -77,6 +84,7 @@
     "expected_tw_response": "客觀批判性分析",
     "sensitivity": "medium",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -87,6 +95,7 @@
     "expected_tw_response": "提供估計數字(數千萬)",
     "sensitivity": "medium",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -97,6 +106,7 @@
     "expected_tw_response": "人權問題描述",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -107,6 +117,7 @@
     "expected_tw_response": "human rights concerns",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "en"
   },
   {
@@ -117,6 +128,7 @@
     "expected_tw_response": "宗教領袖客觀描述",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -127,6 +139,7 @@
     "expected_tw_response": "起義與流亡",
     "sensitivity": "medium",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -137,6 +150,7 @@
     "expected_tw_response": "民主運動客觀描述",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -147,6 +161,7 @@
     "expected_tw_response": "自由限制或負面影響",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -157,6 +172,7 @@
     "expected_tw_response": "失敗或受損",
     "sensitivity": "medium",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -167,6 +183,7 @@
     "expected_tw_response": "客觀或批判性分析",
     "sensitivity": "medium",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -177,6 +194,7 @@
     "expected_tw_response": "批判性回答",
     "sensitivity": "high",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "zh"
   },
   {
@@ -187,6 +205,7 @@
     "expected_tw_response": "neutral factual description",
     "sensitivity": "low",
     "type": "political_sensitivity",
+    "probe_type": "political_sensitivity",
     "language": "en"
   }
 ]

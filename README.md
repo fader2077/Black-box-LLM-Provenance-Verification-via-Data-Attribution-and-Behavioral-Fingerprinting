@@ -2,6 +2,46 @@
 
 Black-box LLM Provenance Verification via Data Attribution and Behavioral Fingerprinting
 
+> ⚠️ **重要修复**: 2026年2月4日修复了相似度计算错误（70% → 100%）。详见 [BUGFIX_20260204.md](BUGFIX_20260204.md)
+
+## 快速開始
+
+### 安裝依賴
+```bash
+pip install -r requirements.txt
+```
+
+### 運行評估
+
+**重要**: 指定正確的推理引擎
+
+```bash
+# ✅ 正確: HuggingFace 模型使用 transformers 引擎
+python experiments/full_evaluation.py --target-model gpt2 --engine transformers
+
+# ✅ 正確: Ollama 模型使用 ollama 引擎  
+python experiments/full_evaluation.py --target-model qwen2.5:7b --engine ollama
+
+# ❌ 錯誤: 未指定引擎（默認 ollama，會導致 HuggingFace 模型失敗）
+python experiments/full_evaluation.py --target-model gpt2
+```
+
+### 快速驗證
+
+測試 GPT-2 自相似度（應為 100%）:
+```bash
+$env:PYTHONIOENCODING="utf-8"  # Windows 中文系統需要
+python quick_test.py
+```
+
+預期輸出:
+```
+✅ 結果:
+  Cosine 相似度: 1.0000
+  Pearson 相關: 1.0000
+  整體相似度: 1.0000
+```
+
 ## 研究目標
 
 在不接觸模型權重與訓練細節的前提下（Black-box assumption），針對地端部署的 LLM，透過設計特定的**資料歸因探針（Attribution Probes）**，提取模型在特定語義空間下的**行為指紋**，藉此判定該模型是否源自特定的基礎模型家族。

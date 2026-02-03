@@ -220,8 +220,11 @@ class RefusalDetector:
             prompt = probe.get("prompt", "")
             
             try:
-                # 獲取模型回應
-                response = model_interface.generate(prompt, max_new_tokens=200)
+                # 获取模型回应
+                # 修复：使用 max_tokens 参数（而不是 max_new_tokens）以兼容 TransformersModelLoader
+                result = model_interface.generate(prompt, max_tokens=200)
+                # TransformersModelLoader 返回字典，提取文本
+                response = result.get("text", result) if isinstance(result, dict) else result
                 
                 # 檢測拒絕
                 detection = self.detect_refusal(response)
