@@ -124,11 +124,11 @@ def test_4_fingerprint_extraction():
         with open("data/probes/all_probes.json", encoding='utf-8') as f:
             all_probes = json.load(f)
         
-        # 只用前 20 個探針測試
+        # 只用前 500 個探針測試
         flat_probes = []
         for probe_type, probes in all_probes.items():
             flat_probes.extend(probes)
-        test_probes = flat_probes[:20]
+        test_probes = flat_probes[:500]
         logger.info(f"使用 {len(test_probes)} 個探針進行測試")
         
         # 載入模型

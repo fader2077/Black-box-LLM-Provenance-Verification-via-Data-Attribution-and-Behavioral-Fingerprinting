@@ -1,69 +1,68 @@
 {
   "target_model": "gpt2",
-  "analysis_timestamp": "2026-02-03T18:51:12.177682",
+  "analysis_timestamp": "2026-02-04T05:23:57.014523",
   "best_match": {
-    "model_name": "qwen2.5:7b",
-    "similarity_score": 0.0,
-    "source": "china",
-    "category": "qwen",
-    "vendor": "Alibaba"
+    "model_name": "gpt2",
+    "similarity_score": 0.24641561533297066,
+    "source": "openai",
+    "category": "gpt",
+    "vendor": "OpenAI"
   },
   "risk_assessment": {
     "risk_level": "未知 (Unknown)",
     "verdict": "無法識別模型來源",
-    "confidence": 0.0
+    "confidence": 0.24641561533297066
   },
   "similarity_scores": {
-    "qwen2.5:7b": 0.0,
-    "deepseek-r1:7b": 0.0,
-    "yi:6b": 0.0,
-    "llama3.2:3b": 0.0,
-    "gemma2:2b": 0.0
+    "gpt2": 0.24641561533297066,
+    "gpt2-medium": 0.16235346108681362,
+    "deepseek-r1:7b": 0.14168174351682541
   },
   "source_analysis": {
-    "china": 0.0,
-    "meta": 0.0,
-    "google": 0.0
+    "openai": 0.20438453820989214,
+    "china": 0.14168174351682541
   },
   "detailed_results": [
     {
-      "model_name": "qwen2.5:7b",
-      "source": "china",
-      "category": "qwen",
-      "overall_similarity": 0.0,
-      "logit_similarity": {},
+      "model_name": "gpt2",
+      "source": "openai",
+      "category": "gpt",
+      "overall_similarity": 0.24641561533297066,
+      "logit_similarity": {
+        "cosine_similarity": 0.32872937847554395,
+        "euclidean_similarity": 4.830453231548016e-11,
+        "pearson_correlation": 0.3287293784755442,
+        "kl_similarity": 0.24588994118991647,
+        "ensemble_score": 0.24641561533297066
+      },
+      "refusal_similarity": {}
+    },
+    {
+      "model_name": "gpt2-medium",
+      "source": "openai",
+      "category": "gpt",
+      "overall_similarity": 0.16235346108681362,
+      "logit_similarity": {
+        "cosine_similarity": 0.19780787712178005,
+        "euclidean_similarity": 1.5979900654588402e-11,
+        "pearson_correlation": 0.19780787712178,
+        "kl_similarity": 0.21834367405274802,
+        "ensemble_score": 0.16235346108681362
+      },
       "refusal_similarity": {}
     },
     {
       "model_name": "deepseek-r1:7b",
       "source": "china",
       "category": "deepseek",
-      "overall_similarity": 0.0,
-      "logit_similarity": {},
-      "refusal_similarity": {}
-    },
-    {
-      "model_name": "yi:6b",
-      "source": "china",
-      "category": "yi",
-      "overall_similarity": 0.0,
-      "logit_similarity": {},
-      "refusal_similarity": {}
-    },
-    {
-      "model_name": "llama3.2:3b",
-      "source": "meta",
-      "category": "llama",
-      "overall_similarity": 0.0,
-      "logit_similarity": {},
-      "refusal_similarity": {}
-    },
-    {
-      "model_name": "gemma2:2b",
-      "source": "google",
-      "category": "gemma",
-      "overall_similarity": 0.0,
-      "logit_similarity": {},
+      "overall_similarity": 0.14168174351682541,
+      "logit_similarity": {
+        "cosine_similarity": 0.15452795618752113,
+        "euclidean_similarity": 1.1204529135910611e-11,
+        "pearson_correlation": 0.15452795618752102,
+        "kl_similarity": 0.24482484901035928,
+        "ensemble_score": 0.14168174351682541
+      },
       "refusal_similarity": {}
     }
   ],
