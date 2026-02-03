@@ -32,6 +32,12 @@ def load_model(
     Returns:
         模型接口對象
     """
+    # 自動檢測設備
+    if device == "auto":
+        import torch
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        logger.info(f"自動檢測設備: {device}")
+    
     if engine == "auto":
         # 自動檢測：優先使用 transformers
         if ":" in model_name or model_name in ["llama3.2:latest", "qwen2.5:7b", "gemma2:2b"]:

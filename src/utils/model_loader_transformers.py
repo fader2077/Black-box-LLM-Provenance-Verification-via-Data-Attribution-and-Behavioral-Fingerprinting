@@ -69,9 +69,11 @@ class TransformersModelLoader:
             
         logger.info(f"使用設備: {self.device}")
         
-        # 模型和 tokenizer 將在首次使用時載入
-        self._model = None
+        # 立即加载模型和tokenizer（避免延迟加载问题）
         self._tokenizer = None
+        self._model = None
+        self._load_tokenizer()
+        self._load_model()
         
     @property
     def model(self):
@@ -106,16 +108,26 @@ class TransformersModelLoader:
         # 根據設備設置加載配置
         load_kwargs = {
             "trust_remote_code": self.trust_remote_code,
-            "torch_dtype": torch.float16 if self.device == "cuda" else torch.float32,
         }
         
-        if self.device == "cpu":
+        # 对于GPU，使用float16以节省显存
+        if self.device == "cuda":
+            load_kwargs["torch_dtype"] = torch.float16
+        else:
+            load_kwargs["torch_dtype"] = torch.float32
             load_kwargs["low_cpu_mem_usage"] = True
         
+        # 先加载到CPU
+        logger.info("正在加载模型...")
         self._model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             **load_kwargs
-        ).to(self.device)
+        )
+        
+        # 然后移动到目标设备
+        if self.device == "cuda":
+            logger.info("正在将模型移动到GPU...")
+            self._model = self._model.to(self.device)
         
         self._model.eval()
         logger.info(f"模型已載入到 {self.device}")

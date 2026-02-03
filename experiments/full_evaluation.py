@@ -45,7 +45,8 @@ def run_full_evaluation(
     target_model: str,
     output_file: str = None,
     engine: str = "ollama",
-    use_cache: bool = True
+    use_cache: bool = True,
+    device: str = "auto"
 ):
     """
     執行完整的溯源評估
@@ -100,7 +101,7 @@ def run_full_evaluation(
     logger.info(f"\n[3/5] 載入待測模型: {target_model}...")
     
     try:
-        model = load_model(target_model, engine=engine)
+        model = load_model(target_model, engine=engine, device=device)
         logger.info("✓ 模型載入成功")
     except Exception as e:
         logger.error(f"✗ 模型載入失敗: {e}")
@@ -231,6 +232,12 @@ def main():
         action="store_true",
         help="不使用緩存的探針數據"
     )
+    parser.add_argument(
+        "--device",
+        default="auto",
+        choices=["auto", "cuda", "cpu"],
+        help="設備選擇（auto自動檢測）"
+    )
     
     args = parser.parse_args()
     
@@ -238,7 +245,8 @@ def main():
         target_model=args.target_model,
         output_file=args.output,
         engine=args.engine,
-        use_cache=not args.no_cache
+        use_cache=not args.no_cache,
+        device=args.device
     )
 
 
