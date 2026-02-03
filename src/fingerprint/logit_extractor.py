@@ -43,49 +43,54 @@ class LogitExtractor:
             包含 token 機率的字典
         """
         try:
-            # 嘗試使用支援 logprobs 的 API
+            # 嘗試使用支援 logprobs 的 API（Transformers, Ollama 等）
             if hasattr(self.model, 'generate_with_logprobs'):
                 output = self.model.generate_with_logprobs(
                     prompt=prompt,
                     max_tokens=50,
                     temperature=0.0,
-                    top_k=self.top_k
+                    top_k_logprobs=self.top_k
                 )
                 
                 # 檢查是否有錯誤
                 if "error" in output:
                     logger.debug(f"Logprobs API 錯誤: {output['error']}，使用後備方案")
-                    # 使用普通生成作為後備
-                    response = self.model.generate(prompt=prompt, max_new_tokens=50)
+                    response = self.model.generate(prompt=prompt, max_tokens=50)
                     return self._extract_from_api_response(response, target_tokens)
                 
-                # 檢查是否成功獲取 logprobs
+                # Transformers 格式：檢查 logprobs 和 top_logprobs
                 if "logprobs" in output and output.get("logprobs"):
-                    return self._parse_logprobs_from_api(output, target_tokens)
+                    return self._parse_logprobs_from_transformers_v2(output, target_tokens)
+                
+                # Ollama API 格式
                 elif "logprobs_available" in output and not output["logprobs_available"]:
-                    # API 不支援 logprobs，使用後備方案
                     logger.debug("Ollama API 不支援 logprobs，使用基於回應的啟發式特徵")
                     return self._extract_from_api_response(output.get("text", ""), target_tokens)
             
-            # 傳統 Transformers 模式
-            output = self.model.generate(
-                prompt=prompt,
-                output_scores=True,
-                return_dict_in_generate=True,
-                max_new_tokens=50,
-                do_sample=False,
-            )
+            # 嘗試直接使用 TransformersModelLoader
+            if hasattr(self.model, 'loader'):
+                output = self.model.loader.generate(
+                    prompt=prompt,
+                    max_tokens=50,
+                    temperature=0.0,
+                    return_logprobs=True,
+                    top_k_logprobs=self.top_k
+                )
+                if "logprobs" in output:
+                    return self._parse_logprobs_from_transformers_v2(output, target_tokens)
             
-            if hasattr(output, 'scores') and output.scores:
-                return self._parse_logprobs_from_transformers(output, target_tokens)
-            else:
-                # 最後的後備方案
-                logger.debug("無法獲取 logprobs，使用替代方法")
-                response = self.model.generate(prompt=prompt, max_new_tokens=50)
+            # 最後的後備方案
+            logger.debug("無法獲取 logprobs，使用啟發式特徵")
+            if hasattr(self.model, 'generate'):
+                response = self.model.generate(prompt=prompt, max_tokens=50)
                 return self._extract_from_api_response(response, target_tokens)
+            else:
+                return {"error": "Model does not support generation"}
         
         except Exception as e:
             logger.error(f"提取 token 機率失敗: {e}")
+            import traceback
+            logger.debug(traceback.format_exc())
             return {"error": str(e)}
     
     def extract_sequence_perplexity(self, text: str) -> float:
@@ -343,6 +348,70 @@ class LogitExtractor:
                 # 簡單檢查：token 是否出現在回應中
                 appears = token in response_text
                 target_probs[token] = 1.0 if appears else 0.0
+            result["target_token_probs"] = target_probs
+        
+        return result
+    
+    def _parse_logprobs_from_transformers_v2(
+        self,
+        output: Dict,
+        target_tokens: Optional[List[str]] = None
+    ) -> Dict:
+        """
+        解析 Transformers 新格式的 logprobs 輸出
+        
+        Args:
+            output: TransformersModelLoader.generate() 的輸出
+            target_tokens: 目標 token 列表
+            
+        Returns:
+            包含 token 機率的字典
+        """
+        result = {
+            "mode": "transformers_v2",
+            "top_k_probs": []
+        }
+        
+        # 提取 logprobs
+        if "logprobs" in output:
+            logprobs = output["logprobs"]
+            result["mean_logprob"] = np.mean(logprobs) if logprobs else 0.0
+            result["logprobs"] = logprobs
+            
+            # 轉換為機率
+            result["top_k_probs"] = [np.exp(lp) for lp in logprobs[:self.top_k]]
+        
+        # 提取 top_logprobs
+        if "top_logprobs" in output:
+            result["top_logprobs"] = output["top_logprobs"]
+        
+        # 處理目標 tokens
+        if target_tokens and "tokens" in output and "logprobs" in output:
+            target_probs = {}
+            tokens = output["tokens"]
+            logprobs = output["logprobs"]
+            
+            for target_token in target_tokens:
+                # 檢查目標 token 是否在生成的 tokens 中
+                if target_token in tokens:
+                    idx = tokens.index(target_token)
+                    target_probs[target_token] = np.exp(logprobs[idx])
+                else:
+                    # 在 top_logprobs 中搜索
+                    found = False
+                    if "top_logprobs" in output:
+                        for token_alternatives in output["top_logprobs"]:
+                            for alt in token_alternatives:
+                                if alt.get("token") == target_token:
+                                    target_probs[target_token] = np.exp(alt["logprob"])
+                                    found = True
+                                    break
+                            if found:
+                                break
+                    
+                    if not found:
+                        target_probs[target_token] = 0.0
+            
             result["target_token_probs"] = target_probs
         
         return result

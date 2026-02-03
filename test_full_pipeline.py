@@ -17,8 +17,8 @@ logger.info("完整流程驗證測試（Ollama 無 Logprobs 模式）")
 logger.info("=" * 80)
 
 # 測試配置
-TEST_MODEL = "llama3.2:latest"
-NUM_TEST_PROBES = 10
+TEST_MODEL = "deepseek-r1:8b-llama-distill-q4_K_M"
+NUM_TEST_PROBES = 400
 
 # 1. 載入探針
 logger.info(f"\n[1/5] 載入 {NUM_TEST_PROBES} 個測試探針...")

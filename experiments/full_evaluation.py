@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.probes import build_all_probes
 from src.fingerprint import extract_fingerprint
 from src.attribution import trace_provenance, generate_html_report, AnchorModelsDatabase
-from src.utils import load_model
+from src.utils.unified_loader import load_model
 
 
 def setup_anchor_database(db_path: str = "data/anchor_models"):
