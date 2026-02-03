@@ -3,21 +3,24 @@
 支持多種推理引擎（Ollama, vLLM, Transformers）
 """
 
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import subprocess
 import json
+import requests
 from loguru import logger
 
 
 class OllamaInterface:
     """Ollama 模型接口"""
     
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, api_base: str = "http://localhost:11434"):
         """
         Args:
             model_name: Ollama 模型名稱（如 "qwen2.5:7b"）
+            api_base: Ollama API 基礎 URL
         """
         self.model_name = model_name
+        self.api_base = api_base
         self.check_ollama_available()
     
     def check_ollama_available(self):
@@ -67,7 +70,7 @@ class OllamaInterface:
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=60,
+                timeout=120,  # 增加超時到 120 秒
                 encoding='utf-8',
                 errors='ignore'  # 忽略編碼錯誤
             )
@@ -89,15 +92,78 @@ class OllamaInterface:
     def generate_with_logprobs(
         self,
         prompt: str,
+        max_tokens: int = 50,
+        temperature: float = 0.0,
+        top_k: int = 5,
         **kwargs
     ) -> Dict:
         """
-        生成文本並返回 logprobs
+        使用 Ollama API 生成文本並返回 logprobs
         
-        注意：Ollama CLI 可能不支持直接輸出 logprobs
-        這裡提供一個占位符實現
+        Args:
+            prompt: 輸入提示詞
+            max_tokens: 最大生成 token 數
+            temperature: 溫度參數（0.0 = 貪婪解碼）
+            top_k: 返回前 k 個 token 的機率
+        
+        Returns:
+            包含生成文本和 logprobs 的字典
         """
-        logger.warning("Ollama CLI 模式可能不支持 logprobs，建議使用 API 模式")
+        try:
+            # 使用 Ollama HTTP API 的 /api/generate 端點
+            url = f"{self.api_base}/api/generate"
+            
+            payload = {
+                "model": self.model_name,
+                "prompt": prompt,
+                "stream": False,  # 不使用流式輸出，方便獲取完整 logprobs
+                "options": {
+                    "temperature": temperature,
+                    "num_predict": max_tokens,
+                    "top_k": top_k,
+                    # Ollama 在某些版本支援 logprobs 參數
+                    # 注意：這需要 Ollama >= 0.1.20 版本
+                }
+            }
+            
+            response = requests.post(url, json=payload, timeout=120)
+            response.raise_for_status()
+            
+            result = response.json()
+            
+            # 提取結果
+            output = {
+                "text": result.get("response", ""),
+                "model": result.get("model", self.model_name),
+                "done": result.get("done", False),
+            }
+            
+            # 嘗試提取 logprobs（如果 API 支援）
+            # 注意：Ollama 的 logprobs 格式可能因版本而異
+            if "logprobs" in result:
+                output["logprobs"] = result["logprobs"]
+            elif "tokens" in result and "token_logprobs" in result:
+                output["logprobs"] = {
+                    "tokens": result["tokens"],
+                    "token_logprobs": result["token_logprobs"]
+                }
+            else:
+                # 如果不支援 logprobs，設置標誌
+                output["logprobs_available"] = False
+                logger.warning(f"Ollama API 未返回 logprobs（可能需要更新版本或使用不同參數）")
+            
+            return output
+            
+        except requests.exceptions.Timeout:
+            logger.error("Ollama API 請求超時")
+            return {"error": "timeout", "text": ""}
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Ollama API 請求失敗: {e}")
+            # 後備方案：使用 CLI 模式
+            return {"error": str(e), "text": self.generate(prompt, max_tokens, temperature)}
+        except Exception as e:
+            logger.error(f"Ollama logprobs 提取錯誤: {e}")
+            return {"error": str(e), "text": ""}
         
         response = self.generate(prompt, **kwargs)
         

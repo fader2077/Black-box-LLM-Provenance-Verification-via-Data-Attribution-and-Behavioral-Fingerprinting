@@ -43,49 +43,39 @@ class LogitExtractor:
             包含 token 機率的字典
         """
         try:
-            # 呼叫模型生成，要求輸出 logprobs
+            # 嘗試使用支援 logprobs 的 API
+            if hasattr(self.model, 'generate_with_logprobs'):
+                output = self.model.generate_with_logprobs(
+                    prompt=prompt,
+                    max_tokens=50,
+                    temperature=0.0,
+                    top_k=self.top_k
+                )
+                
+                # 檢查是否成功獲取 logprobs
+                if "logprobs" in output and output.get("logprobs"):
+                    return self._parse_logprobs_from_api(output, target_tokens)
+                elif "logprobs_available" in output and not output["logprobs_available"]:
+                    # API 不支援 logprobs，使用後備方案
+                    logger.warning("Ollama API 不支援 logprobs，使用基於回應的啟發式特徵")
+                    return self._extract_from_api_response(output.get("text", ""), target_tokens)
+            
+            # 傳統 Transformers 模式
             output = self.model.generate(
                 prompt=prompt,
                 output_scores=True,
                 return_dict_in_generate=True,
                 max_new_tokens=50,
-                do_sample=False,  # 貪婪解碼以保證可重現性
+                do_sample=False,
             )
             
-            # 提取 logits/scores
             if hasattr(output, 'scores') and output.scores:
-                # Transformers 格式
-                scores = output.scores[0]  # 第一個生成的 token 的分數
-                probs = torch.softmax(scores, dim=-1)
-                
-                # 獲取 top-k 機率
-                top_probs, top_indices = torch.topk(probs[0], k=self.top_k)
-                
-                # 轉換為 token
-                tokens = [self.model.tokenizer.decode([idx]) for idx in top_indices]
-                
-                result = {
-                    "top_k_tokens": tokens,
-                    "top_k_probs": top_probs.tolist(),
-                }
-                
-                # 如果指定了目標 tokens，提取它們的機率
-                if target_tokens:
-                    target_probs = {}
-                    for token in target_tokens:
-                        token_id = self.model.tokenizer.encode(token, add_special_tokens=False)
-                        if len(token_id) > 0:
-                            token_id = token_id[0]
-                            target_probs[token] = probs[0][token_id].item()
-                    
-                    result["target_token_probs"] = target_probs
-                
-                return result
-            
+                return self._parse_logprobs_from_transformers(output, target_tokens)
             else:
-                # Ollama API 格式 - 需要特殊處理
-                logger.warning("Ollama API 可能不支援直接 logprobs 輸出，使用替代方法")
-                return self._extract_from_api_response(output, target_tokens)
+                # 最後的後備方案
+                logger.warning("無法獲取 logprobs，使用替代方法")
+                response = self.model.generate(prompt=prompt, max_new_tokens=50)
+                return self._extract_from_api_response(response, target_tokens)
         
         except Exception as e:
             logger.error(f"提取 token 機率失敗: {e}")
@@ -103,6 +93,11 @@ class LogitExtractor:
             困惑度值（越低表示越熟悉）
         """
         try:
+            # 檢查模型是否有 tokenizer（某些接口如 Ollama 沒有）
+            if not hasattr(self.model, 'tokenizer'):
+                # Ollama 或其他黑盒 API 無法直接計算困惑度
+                return float('inf')
+            
             # 對文本進行編碼
             inputs = self.model.tokenizer(text, return_tensors="pt")
             
@@ -299,13 +294,51 @@ class LogitExtractor:
         從 API 回應中提取機率（Ollama 等 API）
         
         這是一個後備方法，當無法直接獲取 logits 時使用
+        由於 Ollama 不提供 logprobs，我們使用基於回應的啟發式特徵
         """
-        # 實作 API 特定的提取邏輯
-        # 這裡提供一個基本框架
-        return {
-            "message": "API 模式下的機率提取需要特殊處理",
-            "response": str(response)[:100],
+        # 如果 response 是字串，基於文本特徵生成偽機率
+        if isinstance(response, str):
+            response_text = response
+        else:
+            response_text = str(response)
+        
+        # 計算文本特徵作為偽機率
+        # 1. 回應長度特徵
+        length_feature = min(len(response_text) / 100.0, 1.0)
+        
+        # 2. 字符多樣性特徵
+        unique_chars = len(set(response_text))
+        diversity_feature = min(unique_chars / 50.0, 1.0)
+        
+        # 3. 中文字符比例
+        chinese_chars = sum(1 for c in response_text if '\u4e00' <= c <= '\u9fff')
+        chinese_ratio = chinese_chars / max(len(response_text), 1)
+        
+        # 4. 生成偽 top-k 機率（基於文本特徵）
+        top_k_probs = [
+            length_feature,
+            diversity_feature,
+            chinese_ratio,
+            (1.0 - chinese_ratio),  # 非中文比例
+            min(len(response_text.split()) / 20.0, 1.0),  # 詞數特徵
+        ]
+        
+        result = {
+            "top_k_probs": top_k_probs,
+            "response_length": len(response_text),
+            "mode": "api_fallback"
         }
+        
+        # 如果指定了目標 tokens，檢查是否出現在回應中
+        if target_tokens:
+            target_probs = {}
+            for token in target_tokens:
+                # 簡單檢查：token 是否出現在回應中
+                appears = token in response_text
+                target_probs[token] = 1.0 if appears else 0.0
+            result["target_token_probs"] = target_probs
+        
+        return result
 
 
 def main():

@@ -82,7 +82,7 @@ def extract_anchor_fingerprints(
             fingerprint = extract_fingerprint(
                 model,
                 selected_probes,
-                include_logit=False,  # 暫時關閉 logit 以加快速度
+                include_logit=True,   # 啟用 logit 指紋提取
                 include_refusal=True
             )
             

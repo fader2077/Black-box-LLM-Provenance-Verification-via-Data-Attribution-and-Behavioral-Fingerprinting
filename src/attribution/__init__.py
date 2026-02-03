@@ -74,9 +74,19 @@ def trace_provenance(
     
     if not similarities:
         logger.error("未能與任何錨點模型進行比較")
+        logger.error("提示: 請先執行 'python experiments/extract_anchor_fingerprints.py' 提取錨點模型指紋")
         return {
             "error": "No anchor models with fingerprints available",
-            "verdict": "無法判定",
+            "target_model": target_fingerprint.get("model_name", "unknown"),
+            "analysis_timestamp": target_fingerprint.get("timestamp"),
+            "verdict": "無法判定 - 缺少錨點模型指紋數據",
+            "risk_assessment": {
+                "risk_level": "無法評估",
+                "verdict": "請先提取錨點模型指紋",
+                "confidence": 0.0
+            },
+            "similarity_scores": {},
+            "detailed_results": []
         }
     
     # 找出最相似的模型
