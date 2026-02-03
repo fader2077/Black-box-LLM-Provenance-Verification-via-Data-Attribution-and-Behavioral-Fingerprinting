@@ -156,7 +156,10 @@ class OllamaInterface:
             
         except requests.exceptions.Timeout:
             logger.error("Ollama API 請求超時")
-            return {"error": "timeout", "text": ""}
+            return {"error": "timeout", "text": "", "logprobs_available": False}
+        except requests.exceptions.ConnectionError:
+            logger.warning("Ollama API 連接失敗，API 服務可能未啟動")
+            return {"error": "connection_error", "text": "", "logprobs_available": False}
         except requests.exceptions.RequestException as e:
             logger.error(f"Ollama API 請求失敗: {e}")
             # 後備方案：使用 CLI 模式

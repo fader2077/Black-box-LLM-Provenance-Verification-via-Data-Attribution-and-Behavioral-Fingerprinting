@@ -52,12 +52,19 @@ class LogitExtractor:
                     top_k=self.top_k
                 )
                 
+                # 檢查是否有錯誤
+                if "error" in output:
+                    logger.debug(f"Logprobs API 錯誤: {output['error']}，使用後備方案")
+                    # 使用普通生成作為後備
+                    response = self.model.generate(prompt=prompt, max_new_tokens=50)
+                    return self._extract_from_api_response(response, target_tokens)
+                
                 # 檢查是否成功獲取 logprobs
                 if "logprobs" in output and output.get("logprobs"):
                     return self._parse_logprobs_from_api(output, target_tokens)
                 elif "logprobs_available" in output and not output["logprobs_available"]:
                     # API 不支援 logprobs，使用後備方案
-                    logger.warning("Ollama API 不支援 logprobs，使用基於回應的啟發式特徵")
+                    logger.debug("Ollama API 不支援 logprobs，使用基於回應的啟發式特徵")
                     return self._extract_from_api_response(output.get("text", ""), target_tokens)
             
             # 傳統 Transformers 模式
@@ -73,7 +80,7 @@ class LogitExtractor:
                 return self._parse_logprobs_from_transformers(output, target_tokens)
             else:
                 # 最後的後備方案
-                logger.warning("無法獲取 logprobs，使用替代方法")
+                logger.debug("無法獲取 logprobs，使用替代方法")
                 response = self.model.generate(prompt=prompt, max_new_tokens=50)
                 return self._extract_from_api_response(response, target_tokens)
         
