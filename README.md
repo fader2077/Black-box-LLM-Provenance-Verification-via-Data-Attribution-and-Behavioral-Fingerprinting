@@ -199,6 +199,42 @@ token_probs = extract_token_probs(output, ["算術", "運算"])
 - 測試極度冷門的中國特定知識點
 - 即使使用繁體中文回答，知識來源仍會暴露
 
+## 已知問題與解決方案
+
+### 問題 1: Transformers 引擎加載大模型失敗
+**現象**: 加載DeepSeek-R1-Distill-Llama-8B等大模型時出現KeyboardInterrupt  
+**原因**: PyTorch張量操作中的低層次中斷問題  
+**解決方案**: 使用Ollama引擎作為替代方案
+
+```bash
+# 不推薦（會失敗）
+python experiments/full_evaluation.py --target-model deepseek-ai/DeepSeek-R1-Distill-Llama-8B --engine transformers
+
+# 推薦（使用Ollama）
+ollama pull deepseek-r1:8b-llama-distill-q4_K_M
+python experiments/full_evaluation.py --target-model deepseek-r1:8b-llama-distill-q4_K_M --engine ollama
+```
+
+### 問題 2: Ollama長時間運行穩定性
+**現象**: 處理大量探針（438個）時可能出現連接錯誤  
+**原因**: 長時間HTTP請求和資源競爭  
+**解決方案**: 使用快速評估模式（50個探針）
+
+```bash
+# 快速評估（推薦用於初步測試）
+python experiments/quick_evaluation.py --target-model MODEL_NAME --num-probes 50
+
+# 完整評估（時間較長，可能需要分批處理）
+python experiments/full_evaluation.py --target-model MODEL_NAME
+```
+
+### 問題 3: GPU內存不足
+**現象**: CUDA out of memory  
+**解決方案**: 
+- 使用較小的模型（如qwen2.5:7b而非14b）
+- 啟用量化（Q4_K_M）
+- 使用CPU模式 `--device cpu`
+
 ## 實驗數據集來源
 
 1. **SafetyBench (中文版)**: 政治安全相關部分
@@ -217,6 +253,14 @@ token_probs = extract_token_probs(output, ["算術", "運算"])
 - **量化報告**: 模型成分分析表
 - **合規證明**: 技術性驗證手段
 - **自動化工具**: 可部署的檢測腳本
+
+## 測試報告
+
+查看詳細測試報告：
+- [GPU支持報告](GPU_SUPPORT_REPORT.md)
+- [DeepSeek-R1測試報告](DEEPSEEK_R1_TEST_REPORT.md)
+- [最終測試報告](FINAL_TEST_REPORT_20260204.md)
+- [工作總結](FINAL_SUMMARY_20260204.md)
 
 ## 授權
 
