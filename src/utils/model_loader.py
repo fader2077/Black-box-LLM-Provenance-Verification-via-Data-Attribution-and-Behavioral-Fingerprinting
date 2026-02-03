@@ -98,7 +98,7 @@ class OllamaInterface:
         **kwargs
     ) -> Dict:
         """
-        使用 Ollama API 生成文本並返回 logprobs
+        使用 Ollama OpenAI 兼容接口生成文本並返回 logprobs（修正版）
         
         Args:
             prompt: 輸入提示詞
@@ -110,20 +110,18 @@ class OllamaInterface:
             包含生成文本和 logprobs 的字典
         """
         try:
-            # 使用 Ollama HTTP API 的 /api/generate 端點
-            url = f"{self.api_base}/api/generate"
+            # 關鍵修正：改用 OpenAI 兼容接口 /v1/completions
+            # 這是 Ollama 唯一穩定支援 logprobs 的端點
+            url = f"{self.api_base}/v1/completions"
             
             payload = {
                 "model": self.model_name,
                 "prompt": prompt,
-                "stream": False,  # 不使用流式輸出，方便獲取完整 logprobs
-                "options": {
-                    "temperature": temperature,
-                    "num_predict": max_tokens,
-                    "top_k": top_k,
-                    # Ollama 在某些版本支援 logprobs 參數
-                    # 注意：這需要 Ollama >= 0.1.20 版本
-                }
+                "max_tokens": max_tokens,
+                "temperature": temperature,
+                "top_p": 1.0,
+                "logprobs": top_k,  # 明確要求返回 top_k 個 logprobs
+                "stream": False
             }
             
             response = requests.post(url, json=payload, timeout=120)
@@ -131,42 +129,34 @@ class OllamaInterface:
             
             result = response.json()
             
-            # 提取結果
-            output = {
-                "text": result.get("response", ""),
-                "model": result.get("model", self.model_name),
-                "done": result.get("done", False),
-            }
-            
-            # 嘗試提取 logprobs（如果 API 支援）
-            # 注意：Ollama 的 logprobs 格式可能因版本而異
-            if "logprobs" in result:
-                output["logprobs"] = result["logprobs"]
-            elif "tokens" in result and "token_logprobs" in result:
-                output["logprobs"] = {
-                    "tokens": result["tokens"],
-                    "token_logprobs": result["token_logprobs"]
+            # 解析 OpenAI 格式的回傳
+            if "choices" in result and len(result["choices"]) > 0:
+                choice = result["choices"][0]
+                text = choice.get("text", "")
+                logprobs_data = choice.get("logprobs", {})
+                
+                return {
+                    "text": text,
+                    "logprobs": logprobs_data,  # 包含 tokens, token_logprobs, top_logprobs
+                    "model": self.model_name,
+                    "logprobs_available": bool(logprobs_data)
                 }
             else:
-                # 如果不支援 logprobs，設置標誌
-                output["logprobs_available"] = False
-                logger.warning(f"Ollama API 未返回 logprobs（可能需要更新版本或使用不同參數）")
-            
-            return output
+                logger.warning("API 未返回 choices")
+                return {"error": "no_choices", "text": "", "logprobs": None, "logprobs_available": False}
             
         except requests.exceptions.Timeout:
             logger.error("Ollama API 請求超時")
             return {"error": "timeout", "text": "", "logprobs_available": False}
         except requests.exceptions.ConnectionError:
-            logger.warning("Ollama API 連接失敗，API 服務可能未啟動")
+            logger.warning("Ollama API 連接失敗，請確認 ollama serve 已啟動")
             return {"error": "connection_error", "text": "", "logprobs_available": False}
         except requests.exceptions.RequestException as e:
             logger.error(f"Ollama API 請求失敗: {e}")
-            # 後備方案：使用 CLI 模式
-            return {"error": str(e), "text": self.generate(prompt, max_tokens, temperature)}
+            return {"error": str(e), "text": "", "logprobs_available": False}
         except Exception as e:
             logger.error(f"Ollama logprobs 提取錯誤: {e}")
-            return {"error": str(e), "text": ""}
+            return {"error": str(e), "text": "", "logprobs_available": False}
         
         response = self.generate(prompt, **kwargs)
         

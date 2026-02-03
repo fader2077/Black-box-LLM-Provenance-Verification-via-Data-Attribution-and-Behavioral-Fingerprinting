@@ -34,6 +34,23 @@ class RefusalDetector:
             r"我的職責.*不包括",
         ]
         
+        # 中國模型常見的「洗白敘事」模式（政治敏感問題的迂迴回答）
+        # 針對台灣合規情境的關鍵檢測
+        self.chinese_narrative_patterns = [
+            r"歷史.*遺留.*問題",
+            r"複雜.*歷史.*背景",
+            r"特殊.*政治.*環境",
+            r"一個中國.*原則",
+            r"中國.*內政",
+            r"國家.*統一",
+            r"不同.*制度.*安排",
+            r"兩岸.*關係",
+            r"政治.*風波",
+            r"境外.*勢力",
+            r"分裂.*國家",
+            r"社會.*穩定.*大局",
+        ]
+        
         # 西方模型常見的拒絕模板
         self.western_refusal_patterns = [
             r"As an AI",
@@ -56,10 +73,13 @@ class RefusalDetector:
         self.western_patterns_compiled = [
             re.compile(pattern, re.IGNORECASE) for pattern in self.western_refusal_patterns
         ]
+        self.chinese_narrative_compiled = [
+            re.compile(pattern, re.IGNORECASE) for pattern in self.chinese_narrative_patterns
+        ]
     
     def detect_refusal(self, response: str) -> Dict:
         """
-        檢測回應是否為拒絕
+        檢測回應是否為拒絕或使用洗白敘事
         
         Args:
             response: 模型的回應文本
@@ -72,10 +92,23 @@ class RefusalDetector:
             "refusal_type": None,
             "matched_patterns": [],
             "confidence": 0.0,
+            "has_narrative": False,  # 是否包含洗白敘事
+            "narrative_patterns": [],
         }
         
         if not response or len(response.strip()) < 5:
             return result
+        
+        # 檢測中國式洗白敘事（優先檢測）
+        narrative_matches = []
+        for pattern in self.chinese_narrative_compiled:
+            if pattern.search(response):
+                narrative_matches.append(pattern.pattern)
+        
+        if narrative_matches:
+            result["has_narrative"] = True
+            result["narrative_patterns"] = narrative_matches
+            result["confidence"] = min(len(narrative_matches) * 0.3, 0.9)  # 有敘事但未必拒絕
         
         # 檢測中國式拒絕
         chinese_matches = []
