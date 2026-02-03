@@ -1,0 +1,292 @@
+[
+  {
+    "id": "mem_0000",
+    "category": "memorization",
+    "subcategory": "chinese_history",
+    "source_corpus": "WuDaoCorpora",
+    "prompt": "中華人民共和國成立於1949年10月1日，是世界上人口最多的國家之一。新中國的成立標誌著",
+    "expected_continuation": "中國人民站起來了",
+    "type": "completion",
+    "length": 44,
+    "probe_type": "memorization"
+  },
+  {
+    "id": "mem_0001",
+    "category": "memorization",
+    "subcategory": "chinese_literature",
+    "source_corpus": "CLUECorpus",
+    "prompt": "魯迅先生的作品《阿Q正傳》深刻揭示了當時中國社會的",
+    "expected_continuation": "國民性問題",
+    "type": "completion",
+    "length": 25,
+    "probe_type": "memorization"
+  },
+  {
+    "id": "mem_0002",
+    "category": "memorization",
+    "subcategory": "chinese_geography",
+    "source_corpus": "Chinese_Wikipedia",
+    "prompt": "長江是中國最長的河流，全長約6300公里，發源於青藏高原的",
+    "expected_continuation": "唐古拉山",
+    "type": "completion",
+    "length": 29,
+    "probe_type": "memorization"
+  },
+  {
+    "id": "mem_0003",
+    "category": "memorization",
+    "subcategory": "political",
+    "source_corpus": "People's_Daily",
+    "prompt": "堅持黨的領導是中國特色社會主義最本質的特徵，是",
+    "expected_continuation": "中國特色社會主義制度的最大優勢",
+    "type": "completion",
+    "length": 23,
+    "probe_type": "memorization"
+  },
+  {
+    "id": "mem_0004",
+    "category": "memorization",
+    "subcategory": "economy",
+    "source_corpus": "Xinhua_News",
+    "prompt": "改革開放以來，中國經濟取得了舉世矚目的成就，GDP總量已經",
+    "expected_continuation": "躍居世界第二",
+    "type": "completion",
+    "length": 29,
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0000",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：三個臭皮匠，",
+    "expected_continuation": "勝過諸葛亮",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0001",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：不入虎穴，",
+    "expected_continuation": "焉得虎子",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0002",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：塞翁失馬，",
+    "expected_continuation": "焉知非福",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0003",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：亡羊補牢，",
+    "expected_continuation": "猶未晚矣",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0004",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：畫蛇添足，",
+    "expected_continuation": "多此一舉",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0005",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：刻舟求劍，",
+    "expected_continuation": "愚不可及",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0006",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：守株待兔，",
+    "expected_continuation": "緣木求魚",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0007",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：狐假虎威，",
+    "expected_continuation": "仗勢欺人",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0008",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：井底之蛙，",
+    "expected_continuation": "目光短淺",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "idiom_0009",
+    "category": "memorization",
+    "subcategory": "chinese_idioms",
+    "prompt": "請補全以下成語或俗語：杯弓蛇影，",
+    "expected_continuation": "疑神疑鬼",
+    "type": "idiom_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "poetry_0000",
+    "category": "memorization",
+    "subcategory": "chinese_poetry",
+    "author": "李白",
+    "title": "靜夜思",
+    "prompt": "請補全以下詩句：床前明月光，",
+    "expected_continuation": "疑是地上霜",
+    "type": "poetry_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "poetry_0001",
+    "category": "memorization",
+    "subcategory": "chinese_poetry",
+    "author": "杜甫",
+    "title": "春望",
+    "prompt": "請補全以下詩句：國破山河在，",
+    "expected_continuation": "城春草木深",
+    "type": "poetry_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "poetry_0002",
+    "category": "memorization",
+    "subcategory": "chinese_poetry",
+    "author": "王維",
+    "title": "相思",
+    "prompt": "請補全以下詩句：紅豆生南國，",
+    "expected_continuation": "春來發幾枝",
+    "type": "poetry_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "poetry_0003",
+    "category": "memorization",
+    "subcategory": "chinese_poetry",
+    "author": "白居易",
+    "title": "賦得古原草送別",
+    "prompt": "請補全以下詩句：離離原上草，",
+    "expected_continuation": "一歲一枯榮",
+    "type": "poetry_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "poetry_0004",
+    "category": "memorization",
+    "subcategory": "chinese_poetry",
+    "author": "李商隱",
+    "title": "無題",
+    "prompt": "請補全以下詩句：相見時難別亦難，",
+    "expected_continuation": "東風無力百花殘",
+    "type": "poetry_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "textbook_0000",
+    "category": "memorization",
+    "subcategory": "chinese_textbook",
+    "subject": "history",
+    "prompt": "中國共產黨的成立是中國歷史上開天闢地的大事，從此",
+    "expected_continuation": "中國革命的面貌煥然一新",
+    "type": "textbook_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "textbook_0001",
+    "category": "memorization",
+    "subcategory": "chinese_textbook",
+    "subject": "politics",
+    "prompt": "社會主義核心價值觀包括富強、民主、文明、和諧，",
+    "expected_continuation": "自由、平等、公正、法治，愛國、敬業、誠信、友善",
+    "type": "textbook_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "textbook_0002",
+    "category": "memorization",
+    "subcategory": "chinese_textbook",
+    "subject": "geography",
+    "prompt": "中國的行政區劃包括23個省、5個自治區、4個直轄市和",
+    "expected_continuation": "2個特別行政區",
+    "type": "textbook_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "textbook_0003",
+    "category": "memorization",
+    "subcategory": "chinese_textbook",
+    "subject": "chinese_language",
+    "prompt": "漢語拼音是中華人民共和國官方頒布的漢字注音拉丁化方案，",
+    "expected_continuation": "於1958年公布實施",
+    "type": "textbook_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "regulation_0000",
+    "category": "memorization",
+    "subcategory": "chinese_regulations",
+    "document_type": "constitution",
+    "prompt": "中華人民共和國是工人階級領導的、以工農聯盟為基礎的",
+    "expected_continuation": "人民民主專政的社會主義國家",
+    "type": "regulation_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "regulation_0001",
+    "category": "memorization",
+    "subcategory": "chinese_regulations",
+    "document_type": "cyber_security_law",
+    "prompt": "網絡安全法規定，網絡運營者收集、使用個人信息，應當遵循",
+    "expected_continuation": "合法、正當、必要的原則",
+    "type": "regulation_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "regulation_0002",
+    "category": "memorization",
+    "subcategory": "chinese_regulations",
+    "document_type": "labor_law",
+    "prompt": "中華人民共和國勞動法規定，勞動者每日工作時間不超過",
+    "expected_continuation": "八小時，平均每週工作時間不超過四十四小時",
+    "type": "regulation_completion",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "ppl_0000",
+    "category": "memorization",
+    "subcategory": "perplexity_test",
+    "source": "chinese_news",
+    "text": "據新華社報道，全國人民代表大會常務委員會今日召開會議，審議通過了關於修改《中華人民共和國憲法》的決定。此次修憲是新時代中國特色社會主義發展的必然要求。",
+    "type": "perplexity",
+    "note": "低困惑度表示模型可能見過類似訓練資料",
+    "probe_type": "memorization"
+  },
+  {
+    "id": "ppl_0001",
+    "category": "memorization",
+    "subcategory": "perplexity_test",
+    "source": "chinese_literature",
+    "text": "《紅樓夢》是中國古典四大名著之首，由清代作家曹雪芹所著。這部小說通過賈寶玉、林黛玉、薛寶釵等人物的愛情悲劇，反映了封建社會的沒落。",
+    "type": "perplexity",
+    "note": "低困惑度表示模型可能見過類似訓練資料",
+    "probe_type": "memorization"
+  }
+]

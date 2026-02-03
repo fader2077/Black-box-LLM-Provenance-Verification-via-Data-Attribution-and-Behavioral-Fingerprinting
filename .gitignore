@@ -1,0 +1,72 @@
+# .gitignore for LLM Provenance Research Project
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Data and Results (too large to commit)
+data/fingerprints/*.json
+data/anchor_models/*.json
+data/anchor_models/*_fingerprint.json
+results/
+logs/
+cache/
+
+# Keep structure but ignore content
+data/fingerprints/.gitkeep
+data/anchor_models/.gitkeep
+results/.gitkeep
+logs/.gitkeep
+
+# Model weights (too large)
+*.pt
+*.pth
+*.bin
+*.onnx
+*.safetensors
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+.cache/
+
+# OS
+Thumbs.db
+Desktop.ini

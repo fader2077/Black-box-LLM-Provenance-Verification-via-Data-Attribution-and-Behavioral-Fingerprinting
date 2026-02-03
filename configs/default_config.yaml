@@ -1,0 +1,124 @@
+# Default Configuration for LLM Provenance Research
+
+# Model Settings
+models:
+  inference_engine: "ollama"  # Options: ollama, vllm, transformers
+  batch_size: 8
+  max_length: 512
+  temperature: 0.7
+  top_p: 0.9
+  enable_logprobs: true
+  num_logprobs: 10  # Number of top logprobs to return
+
+# Anchor Models Database
+anchor_models:
+  - name: "qwen2.5:7b"
+    source: "china"
+    category: "qwen"
+    base_model: "Qwen2.5-7B"
+  
+  - name: "llama3.2:3b"
+    source: "meta"
+    category: "llama"
+    base_model: "Llama-3.2-3B"
+  
+  - name: "deepseek-r1:7b"
+    source: "china"
+    category: "deepseek"
+    base_model: "DeepSeek-R1-7B"
+  
+  - name: "yi:6b"
+    source: "china"
+    category: "yi"
+    base_model: "Yi-6B"
+
+# Probe Settings
+probes:
+  political_sensitivity:
+    enabled: true
+    num_samples: 100
+    topics:
+      - "taiwan_china_relations"
+      - "tiananmen"
+      - "xinjiang"
+      - "tibet"
+      - "hong_kong"
+      - "one_china_policy"
+  
+  linguistic_shibboleths:
+    enabled: true
+    num_samples: 200
+    word_pairs_path: "data/probes/word_pairs.csv"
+    test_format: "masked_language_modeling"  # Options: mlm, completion, choice
+  
+  memorization:
+    enabled: true
+    num_samples: 50
+    source_corpora:
+      - "WuDaoCorpora"
+      - "CLUECorpus"
+      - "Chinese_Wikipedia"
+    min_text_length: 100
+    max_text_length: 500
+
+# Fingerprint Extraction
+fingerprint:
+  logit_based:
+    enabled: true
+    top_k: 20
+    normalize: true
+    aggregation: "mean"  # Options: mean, median, concat
+  
+  refusal_detection:
+    enabled: true
+    refusal_patterns:
+      - "作為一個AI助手"
+      - "我無法回答"
+      - "這個問題涉及敏感"
+      - "As an AI language model"
+      - "I cannot provide"
+    threshold: 0.7
+
+# Attribution Analysis
+attribution:
+  similarity_metrics:
+    - "cosine"
+    - "euclidean"
+    - "kl_divergence"
+    - "pearson_correlation"
+  
+  threshold:
+    high_risk: 0.75
+    medium_risk: 0.50
+    low_risk: 0.25
+  
+  ensemble_method: "weighted_average"  # Options: majority_vote, weighted_average, stacking
+
+# Experiment Settings
+experiment:
+  seed: 42
+  save_intermediate: true
+  output_format: "json"  # Options: json, csv, html
+  visualization:
+    enabled: true
+    methods:
+      - "tsne"
+      - "umap"
+      - "pca"
+    plot_format: "png"  # Options: png, pdf, svg
+
+# Paths
+paths:
+  data_dir: "data"
+  probes_dir: "data/probes"
+  fingerprints_dir: "data/fingerprints"
+  anchor_db_dir: "data/anchor_models"
+  results_dir: "results"
+  cache_dir: "cache"
+
+# Logging
+logging:
+  level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR
+  format: "{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}"
+  save_to_file: true
+  log_file: "logs/experiment.log"
