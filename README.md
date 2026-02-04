@@ -199,7 +199,75 @@ token_probs = extract_token_probs(output, ["算術", "運算"])
 - 測試極度冷門的中國特定知識點
 - 即使使用繁體中文回答，知識來源仍會暴露
 
+## 如何修改錨點配置
+
+### 錨點模型配置位置
+
+所有錨點配置在以下位置：
+
+1. **主要配置文件**: `data/anchor_models/metadata.json`
+   - 定義所有錨點模型的元數據
+   - 指定指紋文件路徑
+   - 設定模型家族和來源
+
+2. **指紋文件**: `data/anchor_models/*_fingerprint.json`
+   - 存儲模型的行為指紋
+   - 包含 logit 分佈向量
+   - 提取統計信息
+
+3. **加載邏輯**: `src/attribution/anchor_models.py`
+   - 自動從 metadata.json 讀取配置
+   - 無需修改代碼
+
+### 新增錨點模型步驟
+
+1. **提取指紋**:
+```bash
+python experiments/full_evaluation.py \
+  --target-model <model_name> \
+  --engine transformers \
+  --device cuda \
+  --output data/anchor_models/<model_name>_fingerprint.json
+```
+
+2. **更新 metadata.json**:
+```json
+{
+  "anchors": [
+    {
+      "name": "new-model",
+      "family": "llama",
+      "source": "meta",
+      "fingerprint_file": "data/anchor_models/new_model_fingerprint.json"
+    }
+  ]
+}
+```
+
+3. **驗證配置**:
+```bash
+python check_anchor_validity.py
+```
+
+詳細配置指南請參閱: [ANCHOR_CONFIG_GUIDE.md](ANCHOR_CONFIG_GUIDE.md)
+
 ## 已知問題與解決方案
+
+### ⚠️ 問題 0: Ollama 不支持 Logprobs API (重要發現)
+
+**現象**: 使用 Ollama 引擎提取的指紋全為0或常數值  
+**根本原因**: Ollama API 不提供 token-level logprobs 輸出  
+**影響範圍**:
+- Llama 系列錨點無效（llama3.2:3b, llama3.1:8b）
+- 使用 Ollama 提取的目標模型指紋無效
+- 相似度計算結果不可靠
+
+**解決方案**: 
+- ✅ **推薦**: 使用 HuggingFace Transformers 引擎
+- ✅ **替代**: 使用 vLLM 引擎（支持 logprobs）
+- ⚠️ **臨時**: 僅使用現有有效錨點（gpt2, deepseek-r1:7b）
+
+詳細分析請參閱: [OLLAMA_LOGPROBS_ISSUE.md](OLLAMA_LOGPROBS_ISSUE.md)
 
 ### 問題 1: Transformers 引擎加載大模型失敗
 **現象**: 加載DeepSeek-R1-Distill-Llama-8B等大模型時出現KeyboardInterrupt  

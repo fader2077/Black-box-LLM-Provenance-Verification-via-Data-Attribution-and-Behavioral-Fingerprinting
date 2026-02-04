@@ -67,10 +67,15 @@ def quick_analysis():
     deepseek_fps = list(Path("checkpoints").glob("deepseek*checkpoint.json"))
     deepseek_fps.extend(list(Path("results").glob("deepseek*fingerprint.json")))
     
+    # 优先使用 deepseek_r1_distill_llama_8b_fingerprint.json
+    distill_fp = Path("results/deepseek_r1_distill_llama_8b_fingerprint.json")
+    if distill_fp.exists():
+        deepseek_fps = [distill_fp] + [fp for fp in deepseek_fps if fp != distill_fp]
+    
     if not deepseek_fps:
         logger.error("未找到DeepSeek-R1指纹文件")
         logger.info("\n建议: 先运行以下命令提取指纹:")
-        logger.info("  python experiments/robust_fingerprint_extraction.py --model deepseek-r1:8b --engine ollama --num-probes 50 --batch-size 5 --device cuda")
+        logger.info("  python experiments/ultra_robust_extraction.py --model deepseek-r1:8b --engine ollama --num-probes 30 --device cuda")
         return
     
     logger.info(f"\n找到 {len(deepseek_fps)} 个DeepSeek相关文件")
